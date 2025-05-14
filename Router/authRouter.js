@@ -15,7 +15,6 @@ authRouter.post("/signin", (req, res) => {
 authRouter.post("/forgetpassword", authorize, (req, res) => {
     forgotPassword(req,res);
 })
-authRouter.post("/signout", authorize, (req, res) => {signOut(req,res);
-})
+authRouter.post("/signout",signOut);
 
 module.exports = authRouter;

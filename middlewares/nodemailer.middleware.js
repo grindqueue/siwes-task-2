@@ -6,33 +6,29 @@ const NODE_EMAILER_PORT = process.env.NODE_EMAILER_PORT;
 const EMAIL_ACCOUNT = process.env.EMAIL_ACCOUNT;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 
-const verificationCode = Math.floor(100000 + Math.random() * 900000);
+let verificationCode = Math.floor(100000 + Math.random() * 900000);
 
 const transporter = nodemailer.createTransport({
     secure: true,
-    host: NODE_EMAILER_HOST,
-    port: NODE_EMAILER_PORT,
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD
+        user: EMAIL_ACCOUNT,
+        pass: EMAIL_PASSWORD,
     }
 });
 
 const sendEmail = async (to, subject, text) => {
     try {
-        transporter.sendMail({
-            to: User.email,
-            subject: "Your email verification code",
-            text: `Your verification code is ${verificationCode}`,
+        await transporter.sendMail({
+            from : EMAIL_ACCOUNT,
+            to: to,
+            subject: subject,
+            text: `${text} ${verificationCode}`,
         })
-
+        console.log(to, subject, text);
     }catch (error) {
         console.error('Error sending email:', error);
     }
 }
 
-module.exports = {
-    sendEmail,
-    verificationCode
-};
+module.exports = sendEmail;

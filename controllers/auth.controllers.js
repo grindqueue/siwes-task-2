@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 const User = require("../models/models.users");
 
-//const { verificationCode, sendEmail } = require("../middlewares/nodemailer.middleware");
+const sendEmail = require("../middlewares/nodemailer.middleware");
 
 
 
@@ -41,6 +41,7 @@ const signUp = async (req, res) => {
 
         res.status(201).
         send("User created successfully");
+        sendEmail(email, "Email Verification", `Your verification code is `);
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
@@ -87,19 +88,17 @@ const signIn = async (req, res) => {
     }
 }
 const signOut = async (req, res) => {
-    const signOut = async (req, res) => {
-        res.status(200).json({
-            message: "User signed out successfully",
-            message: "Remember to remove the token from local storage",
-        });
-    }
+    res.status(200).json({
+        message: "User signed out successfully",
+        prompt : "Remember to remove the token from local storage",
+    });
 }
 const forgotPassword = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and new password are required" });
+    if (!email) {
+      return res.status(400).json({ message: "Email is required to reset password" });
     }
 
     const user = await User.findOne({ email });
@@ -107,6 +106,12 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User with this email does not exist" });
     }
+    await sendEmail(email, "Password Reset", `Your password reset link is: http://example.com/reset-password/${user._id}`);
+
+    const { password, confirmPassword } = req.body;
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    } 
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
