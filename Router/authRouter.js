@@ -17,4 +17,5 @@ authRouter.post("/forgetpassword", authorize, (req, res) => {
 })
 authRouter.post("/signout",signOut);
 
+
 module.exports = authRouter;

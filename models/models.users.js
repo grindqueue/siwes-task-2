@@ -42,10 +42,17 @@ const signUpSchema = new Schema({
             "Password must have at least 8 characters, including uppercase, lowercase, number, and a symbol"
         ],
     },
-    // isVerified : {
-    //     type : Boolean,
-    //     default : false,
-    // },
+    otp : {
+        type : String,
+        required : [true, "OTP is required"],
+    },
+    otpExpires : {
+        type : Date,
+    },
+    isVerified : {
+        type : Boolean,
+        default : false,
+    },
 },{
     timestamps : true
 });

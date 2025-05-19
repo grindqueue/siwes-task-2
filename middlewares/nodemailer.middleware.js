@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
+const otpGenerator = require('otp-generator');
 require('dotenv').config();
 const NODE_EMAILER_HOST = process.env.NODE_EMAILER_HOST;
 const NODE_EMAILER_PORT = process.env.NODE_EMAILER_PORT;
 const EMAIL_ACCOUNT = process.env.EMAIL_ACCOUNT;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 
-let verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+
 
 const transporter = nodemailer.createTransport({
     secure: true,
@@ -17,13 +19,22 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+const generateOTP = () => {
+    return otpGenerator.generate(6, {
+        digits: true,
+        alphabets: false,
+        upperCase: false,
+        specialChars: false
+    });
+};
+
 const sendEmail = async (to, subject, text) => {
     try {
         await transporter.sendMail({
             from : EMAIL_ACCOUNT,
             to: to,
             subject: subject,
-            text: `${text} ${verificationCode}`,
+            text: text,
         })
         console.log(to, subject, text);
     }catch (error) {
@@ -31,4 +42,4 @@ const sendEmail = async (to, subject, text) => {
     }
 }
 
-module.exports = sendEmail;
+module.exports = {sendEmail, generateOTP};
