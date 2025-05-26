@@ -32,9 +32,6 @@ app.listen(process.env.PORT, async() => {
 });
 
 
-app.get("/", (req, res) => {
-    res.send("App running say hi");
-})
 app.use((req, res, error) => {
     res.status(404).json({
         message: "ERROR 404: Not Found",
