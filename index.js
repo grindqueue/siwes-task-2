@@ -3,8 +3,8 @@ const express = require("express");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const authRouter = require("./Router/authRouter");
-const { userRouter } = require("./Router/userRouter");
-const requestaQuoteRouter = require("./Router/requestaQuoteRouter");
+const { userRouter } = require("./Router/userRouter");// user router route
+const requestaQuoteRouter = require("./Router/requestaquoteRouter");
 const connectDatabase = require("./database/mongodb");
 const bodyParser = require("body-parser");
 const cors = require("cors");
