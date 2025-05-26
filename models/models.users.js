@@ -44,7 +44,6 @@ const signUpSchema = new Schema({
     },
     otp : {
         type : String,
-        required : [true, "OTP is required"],
     },
     otpExpires : {
         type : Date,

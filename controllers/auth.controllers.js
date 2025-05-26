@@ -5,6 +5,7 @@ require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 const User = require("../models/models.users");
+const verifyOTP = require("../middlewares/verifyotp");
 
 const {sendEmail, generateOTP} = require("../middlewares/nodemailer.middleware");
 
@@ -27,17 +28,11 @@ const signUp = async (req, res) => {
             throw new Error("Username already exist, enter another username");
         }
 
-        
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const otp = generateOTP();
+        let otp = generateOTP();
         const otpExpires = Date.now() + 10 * 60 * 1000;
-        User.otp = otp;
-        User.otpExpires = otpExpires;
-
-        const [ newUser ] = await User.create([{ firstName, lastName, userName, email, password: hashedPassword }], { session })
-
+        const [ newUser ] = await User.create([{ firstName, lastName, userName, email, password: hashedPassword , otp, otpExpires, isVerified}], { session })
         const token = jwt.sign( {userId: newUser._id}, JWT_SECRET, {expiresIn : JWT_EXPIRES_IN })
 
 
@@ -48,22 +43,7 @@ const signUp = async (req, res) => {
         res.status(201).
         send("User created successfully");
         await sendEmail(email, "Email Verification", otp);
-
-        if (req.body.otp === otp && otpExpires > Date.now()) {
-            newUser.isVerified = true; 
-            newUser.otp = undefined;
-            await newUser.save();
-            res.json({
-                message : "User created successfully",
-                token,
-                userName : newUser.userName,
-            })
-        }
-        else {
-            res.status(400).json({
-                message : "Invalid OTP",
-            })
-        }
+        await verifyOTP(req, res);
 
     } catch (error) {
         await session.abortTransaction();

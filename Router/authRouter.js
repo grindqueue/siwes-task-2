@@ -1,13 +1,11 @@
 const express = require("express");
 const { signUp, signIn, signOut, forgotPassword } = require("../controllers/auth.controllers");
 const authorize = require("../middlewares/auth.middlewares");
-
 const authRouter = express.Router();
 
 
-authRouter.post("/signup", (req, res) => {
-    
-    signUp(req,res);
+authRouter.post("/signup", async(req, res) => {  
+    await signUp(req,res);
 })
 authRouter.post("/signin", (req, res) => {
     signIn(req,res);
