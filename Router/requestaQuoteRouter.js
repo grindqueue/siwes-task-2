@@ -1,6 +1,6 @@
 const express = require("express");
 const authorize = require("../middlewares/auth.middlewares");
-const {requestaQuoteController,  getAllRequestaQuote, getaUserQuote} = require("../controllers/requestaQuote.controller");
+const {requestaQuoteController,  getAllRequestaQuote, getaUserQuote} = require("../controllers/requestaquote.controller");
 
 const requestaQuoteRouter = express.Router();
 
