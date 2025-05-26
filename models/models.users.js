@@ -49,6 +49,7 @@ const signUpSchema = new Schema({
         type : Date,
     },
     isVerified : {
+        required : false,
         type : Boolean,
         default : false,
     },
