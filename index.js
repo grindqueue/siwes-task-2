@@ -4,7 +4,7 @@ require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const authRouter = require("./Router/authRouter"); // auth router route
 const userRouter = require("./Router/userRouter");// user router route
-const requestaQuoteRouter = require("./Router/requestaquoteRouter");
+const requestaQuoteRouter = require("./Router/requestaQuoteRouter");
 const connectDatabase = require("./database/mongodb");
 const bodyParser = require("body-parser");
 const cors = require("cors");
