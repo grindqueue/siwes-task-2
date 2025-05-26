@@ -10,7 +10,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 
-app.use(helmet());
 
 
 const app = express();
@@ -19,6 +18,8 @@ app.use(express.urlencoded({ extended : true }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(cors());
+app.use(helmet());
+
 
 
 app.use("/auth", authRouter);
