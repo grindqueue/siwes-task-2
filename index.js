@@ -3,7 +3,7 @@ const express = require("express");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const authRouter = require("./Router/authRouter");
-const { userRouter } = require("./Router/UserRouter");
+const { userRouter } = require("./Router/userRouter");
 const requestaQuoteRouter = require("./Router/requestaQuoteRouter");
 const connectDatabase = require("./database/mongodb");
 const bodyParser = require("body-parser");
