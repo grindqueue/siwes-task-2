@@ -5,7 +5,6 @@ require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 const User = require("../models/models.users");
-const verifyOTP = require("../middlewares/verifyotp");
 
 const {sendEmail, generateOTP} = require("../middlewares/nodemailer.middleware");
 
@@ -38,7 +37,6 @@ const signUp = async (req, res) => {
         res.status(201).
         send("User created successfully, verify your email to complete registration");
         await sendEmail(email, "Email Verification", otp);
-        await verifyOTP(req, res);
 
     } catch (error) {
         await session.abortTransaction();
