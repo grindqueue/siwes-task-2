@@ -19,13 +19,6 @@ const signUpSchema = new Schema({
         minLength : 2,
         required: [true, "lastname field is required"],
     },
-    userName :{
-        type:String,
-        required: [true,'Please enter your username'],
-        minlength : [6, "User name can not be less than six characters"],
-        maxLength : [100,"Username should not exceed 100 characters"],
-        trim : true,
-    },
     email : {
         type:String,
         required:[true,"Please enter your email address"],

@@ -17,22 +17,17 @@ const signUp = async (req, res) => {
 
     try {
         console.log(req.body)
-        const { firstName, lastName, userName, email, password } = req.body;
+        const { firstName, lastName, email, password } = req.body;
 
         const existingUser = await User.findOne({ email });
-        const existingUserName = await User.findOne({ userName });
         if (existingUser) {
             throw new Error("Email address is already linked to an account");
         }
-        if (existingUserName) {
-            throw new Error("Username already exist, enter another username");
-        }
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         let otp = generateOTP();
         const otpExpires = Date.now() + 10 * 60 * 1000;
-        const [ newUser ] = await User.create([{ firstName, lastName, userName, email, password: hashedPassword , otp, otpExpires}], { session })
+        const [ newUser ] = await User.create([{ firstName, lastName, email, password: hashedPassword , otp, otpExpires}], { session })
         const token = jwt.sign( {userId: newUser._id}, JWT_SECRET, {expiresIn : JWT_EXPIRES_IN })
 
 
@@ -59,12 +54,12 @@ const signIn = async (req, res) => {
     try {
         const { email, userName, password } = req.body;
 
-        if ((!email && !userName) || !password) {
+        if (!email || !password) {
             return res.status(400).json({
                 message : "Kindly provide your email or username and password",
             })
         }
-        const user = await User.findOne({ $or: [ { email }, { userName } ] });
+        const user = await User.findOne({  email });
         if (!user) {
             return res.status(404).json({
                 message : "User not found",
