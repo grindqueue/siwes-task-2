@@ -32,6 +32,7 @@ const verifyOTP = async (req, res) => {
         res.status(500).json({
             message: error.message || "Something went wrong",
         }); 
-        
     }
 }
+
+module.exports = verifyOTP;
