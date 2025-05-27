@@ -18,9 +18,18 @@ const signUp = async (req, res) => {
         console.log(req.body)
         const { firstName, lastName, email, password } = req.body;
 
+        if (!firstName || !lastName || !email || !password) {
+            return res.status(400).json({
+                message: "Kindly provide your first name, last name, email and password",
+            })
+        }
+
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            throw new Error("Email address is already linked to an account");
+            res.status(409).json({
+                message: "Email address is already linked to an account",
+            });
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
