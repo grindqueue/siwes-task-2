@@ -1,7 +1,7 @@
 const express = require("express");
 const { signUp, signIn, signOut, forgotPassword } = require("../controllers/auth.controllers");
 const authorize = require("../middlewares/auth.middlewares");
-const verifyOTP = require("..middlewares/verifyotp.js");
+const verifyOTP = require("..middlewares/verifyotp");
 const { verify } = require("jsonwebtoken");
 const authRouter = express.Router();
 
