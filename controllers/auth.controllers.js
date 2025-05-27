@@ -44,7 +44,9 @@ const signUp = async (req, res) => {
         session.endSession();
 
         res.status(201).
-        send("User created successfully, verify your email to complete registration");
+        json({success: "User created successfully and OTP sent to your email",
+            message: "Kindly verify your email address"
+        })
         await sendEmail(email, "Email Verification", otp);
 
     } catch (error) {
