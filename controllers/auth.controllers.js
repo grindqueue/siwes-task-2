@@ -27,7 +27,7 @@ const signUp = async (req, res) => {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            res.status(409).json({
+            return res.status(409).json({
                 message: "Email address is already linked to an account",
             });
         }
@@ -43,7 +43,7 @@ const signUp = async (req, res) => {
 
         session.endSession();
 
-        res.status(201).
+        return res.status(201).
         json({success: "User created successfully and OTP sent to your email",
             message: "Kindly verify your email address"
         })
@@ -52,7 +52,7 @@ const signUp = async (req, res) => {
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
-        res.status(500).
+        return res.status(500).
         json({
             message : error.message || "Something went wrong",
         })
@@ -96,7 +96,7 @@ const signIn = async (req, res) => {
 }
 
 const signOut = async (req, res) => {
-    res.status(200).json({
+    return res.status(200).json({
         message: "User signed out successfully",
         prompt : "Remember to remove the token from local storage",
     });
