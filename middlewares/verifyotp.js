@@ -3,30 +3,49 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 const verifyOTP = async (req, res) => {
-    const { otp } = req.body;
+    const {userId, otp } = req.body;
 
     try {
-        if (!otp) {
+        if (!userId || !otp) {
             return res.status(400).json({
                 message: "OTP is required",
             });
         }
 
-        if (req.body.otp === otp && otpExpires > Date.now()) {
-            newUser.isVerified = true; 
-            newUser.otp = undefined;
-            await newUser.save();
-            const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-            res.json({
-                message : "User created successfully",
-                token,
-                userName : newUser.userName,
-            })
+        const user = await user.findById({ userId });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
         }
+
+        if (user.otp !== otp) {
+            return res.status(400).json({
+                message: "Invalid OTP",
+            });
+        }
+        if (user.otpExpires < Date.now()) {
+            return res.status(400).json({
+                message: "OTP has expired",
+            });
+        }
+        user.isVerified = true;
+        user.otp = null; // Clear the OTP after successful verification
+        user.otpExpires = null; // Clear the OTP expiration time
+
+        await user.save();
+
+        const token = jwt.sign(
+            { userId: user._id},
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN } // Token expiration time
+        );
         
-        res.status(400).json({
-            message : "Invalid OTP",
-        })
+        return res.status(200).json({
+            message: "User verified successfully",
+            token: token, // Return the JWT token
+        });
         
     } catch (error) {
         res.status(500).json({

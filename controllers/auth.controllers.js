@@ -43,11 +43,13 @@ const signUp = async (req, res) => {
 
         session.endSession();
 
+        await sendEmail(email, "Email Verification", otp);
+
         return res.status(201).
         json({success: "User created successfully and OTP sent to your email",
-            message: "Kindly verify your email address"
+            userId : newUser._id,
         })
-        await sendEmail(email, "Email Verification", otp);
+        
 
     } catch (error) {
         await session.abortTransaction();

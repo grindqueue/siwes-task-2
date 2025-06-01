@@ -2,20 +2,14 @@ const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
 require('dotenv').config();
-const NODE_EMAILER_HOST = process.env.NODE_EMAILER_HOST;
-const NODE_EMAILER_PORT = process.env.NODE_EMAILER_PORT;
-const EMAIL_ACCOUNT = process.env.EMAIL_ACCOUNT;
-const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
-
 
 
 
 const transporter = nodemailer.createTransport({
-    secure: true,
     service: 'gmail',
     auth: {
-        user: EMAIL_ACCOUNT,
-        pass: EMAIL_PASSWORD,
+        user: process.env.EMAIL_ACCOUNT,
+        pass: process.env.EMAIL_PASSWORD,
     }
 });
 
@@ -31,14 +25,14 @@ const generateOTP = () => {
 const sendEmail = async (to, subject, text) => {
     try {
         await transporter.sendMail({
-            from : EMAIL_ACCOUNT,
+            from : process.env.EMAIL_ACCOUNT,
             to: to,
             subject: subject,
             text: text,
         })
         console.log(to, subject, text);
     }catch (error) {
-        console.error('Error sending email:', error);
+        console.error('Error sending email:', error.message);
     }
 }
 

@@ -40,6 +40,8 @@ const signUpSchema = new Schema({
     },
     otpExpires : {
         type : Date,
+        required : false,
+        default : Date.now() + 10 * 60 * 1000, // 10 minutes from now
     },
     isVerified : {
         required : false,
