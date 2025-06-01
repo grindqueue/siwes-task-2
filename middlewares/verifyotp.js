@@ -1,57 +1,59 @@
-const user = require("../models/models.users");
+const User = require("../models/models.users");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
+require("dotenv").config();
 
 const verifyOTP = async (req, res) => {
-    const {userId, otp } = req.body;
+    const { userId, otp } = req.body;
 
     try {
         if (!userId || !otp) {
             return res.status(400).json({
-                message: "OTP is required",
+                message: "User ID and OTP are required",
             });
         }
 
-        const user = await user.findById({ userId });
+        const existingUser = await User.findById(userId);
 
-        if (!user) {
+        if (!existingUser) {
             return res.status(404).json({
                 message: "User not found",
             });
         }
 
-        if (user.otp !== otp) {
+        if (existingUser.otp !== otp) {
             return res.status(400).json({
                 message: "Invalid OTP",
             });
         }
-        if (user.otpExpires < Date.now()) {
+
+        if (existingUser.otpExpires < Date.now()) {
             return res.status(400).json({
                 message: "OTP has expired",
             });
         }
-        user.isVerified = true;
-        user.otp = null; // Clear the OTP after successful verification
-        user.otpExpires = null; // Clear the OTP expiration time
 
-        await user.save();
+        existingUser.isVerified = true;
+        existingUser.otp = null;
+        existingUser.otpExpires = null;
+
+        await existingUser.save();
 
         const token = jwt.sign(
-            { userId: user._id},
+            { userId: existingUser._id },
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN } // Token expiration time
+            { expiresIn: process.env.JWT_EXPIRES_IN }
         );
-        
+
         return res.status(200).json({
             message: "User verified successfully",
-            token: token, // Return the JWT token
+            token,
         });
-        
+
     } catch (error) {
         res.status(500).json({
             message: error.message || "Something went wrong",
-        }); 
+        });
     }
-}
+};
 
 module.exports = verifyOTP;

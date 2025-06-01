@@ -3,6 +3,7 @@ const { signUp, signIn, signOut, forgotPassword } = require("../controllers/auth
 const authorize = require("../middlewares/auth.middlewares");
 const verifyOTP = require("../middlewares/verifyotp");
 const { verify } = require("jsonwebtoken");
+const { resendOTP } = require("../middlewares/resendotp");
 const authRouter = express.Router();
 
 
@@ -19,6 +20,9 @@ authRouter.post("/signout",signOut);
 authRouter.post('/signup/verifyotp', async (req, res) => {
     verifyOTP(req, res);
 })
+authRouter.post('/signup/resendotp', async (req, res) => {
+    resendOTP(req, res);
+});
 
 
 module.exports = authRouter;
