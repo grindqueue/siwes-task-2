@@ -2,11 +2,11 @@ const User = require("../models/models.users");
 const { sendEmail, generateOTP } = require("../middlewares/nodemailer.middleware");
 
 const resendOTP = async (req, res) => {
-    const { userId } = req.body;
+    const { email } = req.body;
 
     try {
 
-        const user = await User.findById(userId);
+        const user = await User.findOne(email);
 
         if (!user) {
             return res.status(404).json({
@@ -33,6 +33,11 @@ const resendOTP = async (req, res) => {
         return res.status(200).json({
             message: "OTP resent successfully",
             userId: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            isVerified: user.isVerified,
+            otpExpires: user.otpExpires,
         });
 
     } catch (error) {

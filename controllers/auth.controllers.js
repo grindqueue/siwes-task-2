@@ -48,6 +48,11 @@ const signUp = async (req, res) => {
         return res.status(201).
         json({success: "User created successfully and OTP sent to your email",
             userId : newUser._id,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            email: newUser.email,
+            token,
+            isVerified: newUser.isVerified,
         })
         
 
@@ -87,8 +92,13 @@ const signIn = async (req, res) => {
         res.status(200).json({
             message : "User signed in successfully",
             token,
-            userName : user.userName,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userId: user._id,
+            email: user.email,
+            isVerified: user.isVerified,
         })
+
     }catch (error) {
         res.status(500).
         json({

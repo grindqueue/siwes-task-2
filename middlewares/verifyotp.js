@@ -3,43 +3,48 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const verifyOTP = async (req, res) => {
-    const { userId, otp } = req.body;
+    const { email, otp } = req.body;
 
     try {
-        if (!userId || !otp) {
+        if (!email) {
+            return res.status(500).json({
+                message: "Internal server error",
+            });
+        }
+        if (!otp) {
             return res.status(400).json({
-                message: "User ID and OTP are required",
+                message: "Kindly provide your OTP",
             });
         }
 
-        const existingUser = await User.findById(userId);
+        const user = await User.findOne(email);
 
-        if (!existingUser) {
+        if (!user) {
             return res.status(404).json({
                 message: "User not found",
             });
         }
 
-        if (existingUser.otp !== otp) {
+        if (user.otp !== otp) {
             return res.status(400).json({
                 message: "Invalid OTP",
             });
         }
 
-        if (existingUser.otpExpires < Date.now()) {
+        if (user.otpExpires < Date.now()) {
             return res.status(400).json({
                 message: "OTP has expired",
             });
         }
 
-        existingUser.isVerified = true;
-        existingUser.otp = null;
-        existingUser.otpExpires = null;
+        user.isVerified = true;
+        user.otp = null;
+        User.otpExpires = null;
 
-        await existingUser.save();
+        await user.save();
 
         const token = jwt.sign(
-            { userId: existingUser._id },
+            { userId: existingUser._id, email: user.email },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
@@ -47,6 +52,11 @@ const verifyOTP = async (req, res) => {
         return res.status(200).json({
             message: "User verified successfully",
             token,
+            userId: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            isVerified: user.isVerified,
         });
 
     } catch (error) {
