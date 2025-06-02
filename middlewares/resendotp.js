@@ -6,7 +6,7 @@ const resendOTP = async (req, res) => {
 
     try {
 
-        const user = await User.findOne(email);
+        const user = await User.findOne({email});
 
         if (!user) {
             return res.status(404).json({

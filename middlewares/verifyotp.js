@@ -7,8 +7,8 @@ const verifyOTP = async (req, res) => {
 
     try {
         if (!email) {
-            return res.status(500).json({
-                message: "Internal server error",
+            return res.status(400).json({
+                message: "email not passed for verification",
             });
         }
         if (!otp) {
@@ -17,7 +17,7 @@ const verifyOTP = async (req, res) => {
             });
         }
 
-        const user = await User.findOne(email);
+        const user = await User.findOne({email});
 
         if (!user) {
             return res.status(404).json({
@@ -36,15 +36,13 @@ const verifyOTP = async (req, res) => {
                 message: "OTP has expired",
             });
         }
-
         user.isVerified = true;
-        user.otp = null;
-        User.otpExpires = null;
-
+        user.otp = null; // Clear OTP after successful verification
+        user.otpExpires = null; // Clear OTP expiration after successful verification
         await user.save();
 
         const token = jwt.sign(
-            { userId: existingUser._id, email: user.email },
+            { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
