@@ -66,3 +66,7 @@ const requestaQuoteSchema = new Schema({
         trim : true,
     }
 })
+
+const RequestaQuote = mongoose.model("RequestaQuote", requestaQuoteSchema);
+
+module.exports = RequestaQuote;

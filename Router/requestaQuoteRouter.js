@@ -1,6 +1,6 @@
 const express = require("express");
 const authorize = require("../middlewares/auth.middlewares");
-const {requestaQuoteController,  getAllRequestaQuote, getaUserQuote} = require("../controllers/requestaquote.controller");
+const {createRequestaQuote,  getAllRequestaQuote, getaUserQuote} = require("../controllers/requestaquote.controller");
 
 const requestaQuoteRouter = express.Router();
 
@@ -9,7 +9,7 @@ requestaQuoteRouter.get("/user", authorize, (req, res) => getAllRequestaQuote(re
 requestaQuoteRouter.get("user/:id", authorize, (req, res) => getaUserQuote(req, res));
 
 requestaQuoteRouter.post("/requestaquote", authorize, (req, res) => {
-    requestaQuoteController(req, res);
+    createRequestaQuote(req, res);
 });
 
 module.exports = requestaQuoteRouter;
