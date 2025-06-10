@@ -4,7 +4,13 @@ const RequestaQuote = require("../models/models.requestaQuote");
 const createRequestaQuote = async (req, res) => {
     try {
         const { name, email, phoneNumber, projectType, estimatedBudget, maximumTime, companyName, requiredSkills, country } = req.body;
+        if(!name || !email || !phoneNumber || !projectType || !estimatedBudget || !maximumTime || !companyName || !requiredSkills || !country) {
+            res.status(400).json({
+                message: "All fields are required",
+            });
+        }
         const requestaQuote = await RequestaQuote.create({ name, email, phoneNumber, projectType, estimatedBudget, maximumTime, companyName, requiredSkills, country });
+        
         if (!requestaQuote) {
             return res.status(400).json({
                 message: "Unable to create request a quote",
