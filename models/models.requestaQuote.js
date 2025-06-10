@@ -7,17 +7,11 @@ const requestaQuoteSchema = new Schema({
         type: String,
         default: uuidv4
     },
-    firstName : {
+    name : {
         type : String,
         required : true,
-        minlength : [2, "First name should not be shorter than 2 characters"],
-        maxlength : [16, "First name should not exceed 25 characters"]
-    },
-    lastName : {
-        type : String,
-        required : true,
-        minlength : [2, "First name should not be shorter than 2 characters"],
-        maxlength : [16, "First name should not exceed 25 characters"]
+        minlength : [2, "name should not be shorter than 2 characters"],
+        maxlength : [100, "name should not exceed 100 characters"]
     },
     phoneNumber : {
         type:String,
@@ -57,12 +51,6 @@ const requestaQuoteSchema = new Schema({
     country : {
         type: String,
         required : true,
-        trim : true,
-    },
-    message : {
-        type: String,
-        required : true,
-        maxlength : [500, "Message must not exceed 500 characters"],
         trim : true,
     }
 })
