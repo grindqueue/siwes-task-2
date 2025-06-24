@@ -30,7 +30,6 @@ const verifyOTP = async (req, res) => {
                 message: "Invalid OTP",
             });
         }
-
         if (user.otpExpires < Date.now()) {
             return res.status(400).json({
                 message: "OTP has expired",

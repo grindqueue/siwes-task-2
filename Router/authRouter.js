@@ -1,8 +1,6 @@
 const express = require("express");
-const { signUp, signIn, signOut, forgotPassword } = require("../controllers/auth.controllers");
-const authorize = require("../middlewares/auth.middlewares");
+const { signUp, signIn, signOut, forgotPassword,resetPassword } = require("../controllers/auth.controllers");
 const verifyOTP = require("../middlewares/verifyotp");
-const { verify } = require("jsonwebtoken");
 const { resendOTP } = require("../middlewares/resendotp");
 const authRouter = express.Router();
 
@@ -13,9 +11,7 @@ authRouter.post("/signup", async(req, res) => {
 authRouter.post("/signin", (req, res) => {
     signIn(req,res);
 })
-authRouter.post("/forgetpassword", authorize, (req, res) => {
-    forgotPassword(req,res);
-})
+authRouter.post("/forgotpassword", forgotPassword);
 authRouter.post("/signout",signOut);
 authRouter.post('/signup/verifyotp', async (req, res) => {
     verifyOTP(req, res);
@@ -23,6 +19,5 @@ authRouter.post('/signup/verifyotp', async (req, res) => {
 authRouter.post('/signup/resendotp', async (req, res) => {
     resendOTP(req, res);
 });
-
-
+authRouter.post('/reset-password/:id', resetPassword);
 module.exports = authRouter;
