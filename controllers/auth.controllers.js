@@ -132,7 +132,7 @@ const forgotPassword = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
-    const resetLink = `http://localhost:3000/auth/reset-password/${token}`;
+    const resetLink = `https://siwes-task-2.onrender.com/auth/reset-password/${token}`;
     await sendEmail(
       email,
       "Password Reset",
