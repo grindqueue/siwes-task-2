@@ -127,44 +127,57 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User with this email does not exist" });
     }
-    res.send("Password reset link sent to your email");
-    await sendEmail(email, "Password Reset", `Your password reset link is: https://siwes-task-2.onrender.com/${user._id}`);
-    res.status(200).json({ message: "Password reset link sent to your email" });
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+    const resetLink = `http://localhost:3000/auth/reset-password/${token}`;
+    await sendEmail(
+      email,
+      "Password Reset",
+      `Your password reset link is: <a href="${resetLink}">Click here to reset your password</a>
+`
+    );
 
-    }catch (error) {
-        res.status(500).json({ message: error.message || "Something went wrong" });
-    }
+    return res.status(200).json({ message: "Password reset link sent to your email" });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message || "Something went wrong" });
+  }
 };
+
 const resetPassword = async (req, res) => {
   try {
-    const id = req.params.id;
-    const matchUser = await User.findById(id);
-
-    if (!matchUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const token = req.params.token;
 
     const { newPassword, confirmPassword } = req.body;
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = await User.findOne({ _id: decoded.userId });
+
+    if (!decoded || !userId) {
+      return res.status(422).json({ message: "Invalid or expired token" });
+    }
+    
     if (!newPassword || !confirmPassword) {
       return res.status(400).json({ message: "New password and confirm password are required" });
     }
-
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
+      return res.status(400).json({ message: "New password and confirm password do not match" });
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
     await User.updateOne(
-        { _id: matchUser._id },
-        { 
-            $set: { password: hashedPassword } 
-        }
+      { _id: userId._id },
+      { $set: { password: hashedPassword } }
     );
+
+    return res.status(200).json({ message: "Password reset successfully" });
+
   } catch (error) {
-    res.status(500).json({ message: error.message || "Something went wrong" });
+    return res.status(500).json({ message: error.message || "Something went wrong" });
   }
 };
 

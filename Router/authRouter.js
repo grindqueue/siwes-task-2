@@ -19,5 +19,5 @@ authRouter.post('/signup/verifyotp', async (req, res) => {
 authRouter.post('/signup/resendotp', async (req, res) => {
     resendOTP(req, res);
 });
-authRouter.post('/reset-password/:id', resetPassword);
+authRouter.post('/reset-password/:token', resetPassword);
 module.exports = authRouter;
