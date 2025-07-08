@@ -132,7 +132,7 @@ const forgotPassword = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
-    const resetLink = `https://requestaquote-auth.vercel.app/auth/reset-password/${token}`;
+    const resetLink = `https://requestaquote-auth.vercel.app/newPassword?token=${token}`;
     await sendEmail(
       email,
       "Password Reset",
