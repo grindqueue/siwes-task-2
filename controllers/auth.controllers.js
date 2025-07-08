@@ -35,7 +35,7 @@ const signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
         let otp = generateOTP();
         const otpExpires = Date.now() + 10 * 60 * 1000;
-        const [ newUser ] = await User.create([{ firstName, lastName, email, password: hashedPassword , otp, otpExpires}], { session })
+        const [ newUser ] = await User.create([{ firstName, lastName, email, password: hashedPassword , otp, otpExpires, isAdmin}], { session })
         const token = jwt.sign( {userId: newUser._id}, JWT_SECRET, {expiresIn : JWT_EXPIRES_IN })
 
 
@@ -132,7 +132,7 @@ const forgotPassword = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
-    const resetLink = `https://siwes-task-2.onrender.com/auth/reset-password/${token}`;
+    const resetLink = `https://requestaquote-auth.vercel.app/auth/reset-password/${token}`;
     await sendEmail(
       email,
       "Password Reset",

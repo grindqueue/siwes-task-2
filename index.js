@@ -3,7 +3,6 @@ const express = require("express");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const authRouter = require("./Router/authRouter"); // auth router route
-const userRouter = require("./Router/userRouter");// user router route
 const requestaQuoteRouter = require("./Router/requestaQuoteRouter");
 const connectDatabase = require("./database/mongodb");
 const bodyParser = require("body-parser");
@@ -23,7 +22,6 @@ app.use(helmet());
 
 
 app.use("/auth", authRouter);
-app.use(userRouter);
 app.use( requestaQuoteRouter);
 
 app.listen(process.env.PORT, async() => {
