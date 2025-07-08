@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended : true }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(cors({
-    origin : "*";
+    origin : "*"
 }));
 app.use(helmet());
 
