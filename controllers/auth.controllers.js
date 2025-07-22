@@ -35,7 +35,7 @@ const signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
         let otp = generateOTP();
         const otpExpires = Date.now() + 10 * 60 * 1000;
-        const [ newUser ] = await User.create([{ firstName, lastName, email, password: hashedPassword , otp, otpExpires, isAdmin}], { session })
+        const [ newUser ] = await User.create([{ firstName, lastName, email, password: hashedPassword , otp, otpExpires}], { session })
         const token = jwt.sign( {userId: newUser._id}, JWT_SECRET, {expiresIn : JWT_EXPIRES_IN })
 
 
